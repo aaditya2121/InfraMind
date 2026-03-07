@@ -1,0 +1,16 @@
+.agents/
+.env
+.env.local
+.env.production
+.env.*
+node_modules/
+.next/
+
+# !! Firebase private key — NEVER commit this !!
+firebase-service-account.json
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
