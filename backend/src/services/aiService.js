@@ -113,7 +113,13 @@ const classifyIssue = async (description, location = "", imageUrl = null) => {
     const jsonString = result.response.text();
     return JSON.parse(jsonString);
   } catch (error) {
-    console.error("AI Classification Error:", error.message);
+    console.error("AI Classification Error details:", {
+      message: error.message,
+      stack: error.stack,
+      location,
+      hasDescription: !!description,
+      hasImage: !!imageUrl
+    });
     return null;
   }
 };
