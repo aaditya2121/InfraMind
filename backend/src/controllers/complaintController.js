@@ -17,6 +17,9 @@ const createComplaint = async (req, res) => {
     let ai_analysis_note = "";
     let is_duplicate = false;
     let location_integrity = "Verified";
+    let category = "General";
+    let priority = "Medium";
+    let department = "Maintenance";
 
     // AI Classification — runs before saving to DB
     const aiResult = await classifyIssue(description, location, image_url);
