@@ -10,7 +10,7 @@ interface Piece {
   color: string; alpha: number; shape: 'rect' | 'circle';
 }
 
-const COLORS = ['#22d3ee','#a78bfa','#f472b6','#fbbf24','#4ade80','#60a5fa'];
+const COLORS = ['#22d3ee', '#a78bfa', '#f472b6', '#fbbf24', '#4ade80', '#60a5fa'];
 
 function ConfettiCanvas({ active }: { active: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -71,7 +71,7 @@ function ConfettiCanvas({ active }: { active: boolean }) {
 }
 
 // ─── EMOJI BURST ─────────────────────────────────────────
-const EMOJIS = ['🎉','✨','⚡','🌟','💫','🎊'];
+const EMOJIS = ['🎉', '✨', '⚡', '🌟', '💫', '🎊'];
 
 function EmojiBurst({ active }: { active: boolean }) {
   if (!active) return null;
@@ -142,7 +142,7 @@ export default function ConfettiCelebration({ show, onDone, children }: Confetti
                 border: '2px solid rgba(34,197,94,0.5)',
                 boxShadow: '0 0 40px rgba(34,197,94,0.4), 0 0 80px rgba(34,197,94,0.15)',
               }}
-              animate={{ boxShadow: ['0 0 40px rgba(34,197,94,0.4)','0 0 70px rgba(34,197,94,0.7)','0 0 40px rgba(34,197,94,0.4)'] }}
+              animate={{ boxShadow: ['0 0 40px rgba(34,197,94,0.4)', '0 0 70px rgba(34,197,94,0.7)', '0 0 40px rgba(34,197,94,0.4)'] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               {/* Animated checkmark path */}
@@ -168,7 +168,7 @@ export default function ConfettiCelebration({ show, onDone, children }: Confetti
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
             <motion.p className="text-xl font-black text-white mb-1"
               animate={{ scale: [1, 1.04, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-              Issue Resolved! 🎊
+              Issue Submitted! 🎊
             </motion.p>
             <p className="text-sm text-green-400">The AI successfully routed your report.</p>
           </motion.div>
