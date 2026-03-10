@@ -12,17 +12,20 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  'http://localhost:3000',
-  process.env.FRONTEND_URL, // set to your Vercel URL on Render
+    'http://localhost:3000',
+    process.env.FRONTEND_URL, // set to your Vercel URL on Render
 ].filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. Render health checks, Postman)
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS: origin ${origin} not allowed`));
-  },
-  credentials: true,
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. Render health checks, Postman)
+        if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+        // Allow all Vercel preview environments
+        if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+        callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
 }));
 
 app.use(express.json({ limit: '50mb' }));
@@ -30,7 +33,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'InfraMind Backend API is running' });
+    res.json({ status: 'ok', message: 'InfraMind Backend API is running' });
 });
 
 // Import specific routes here later
@@ -47,12 +50,12 @@ startSLACron();
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error', message: err.message });
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
