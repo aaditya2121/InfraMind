@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export interface MapTicket {
   _id: string; category: string; department: string;
   priority: 'High' | 'Medium' | 'Low'; description: string; status: string;
+  location?: string;
 }
 
 interface Building {
@@ -20,21 +21,21 @@ interface Building {
 
 // ─── CAMPUS LAYOUT ────────────────────────────────────
 const BUILDINGS: Building[] = [
-  { id: 'academic-a', label: 'Academic Block A', pos: [-4, 0.75, -3], size: [3.5, 1.5, 2.5], color: '#0f2040', emissive: '#1e40af', dept: ['Electrical','Civil'] },
-  { id: 'academic-b', label: 'Academic Block B', pos: [1,  0.875, -3], size: [3,   1.75, 2.5], color: '#0f2040', emissive: '#1e40af', dept: ['Electrical','Civil'] },
-  { id: 'library',    label: 'Library',          pos: [-4, 0.6,   1],  size: [2.5, 1.2, 2],   color: '#1a0f40', emissive: '#7c3aed', dept: ['IT'] },
-  { id: 'lab-a',     label: 'Computer Lab',      pos: [1,  0.5,   1],  size: [2,   1.0, 1.8], color: '#001f2b', emissive: '#0891b2', dept: ['IT'] },
-  { id: 'lab-b',     label: 'Physics Lab',       pos: [3.5,0.45,  1],  size: [1.8, 0.9, 1.8], color: '#001f2b', emissive: '#0891b2', dept: ['Electrical'] },
-  { id: 'cafeteria', label: 'Cafeteria',         pos: [-1, 0.3,   3.5],size: [3.5, 0.6, 2],   color: '#1a1000', emissive: '#d97706', dept: ['Housekeeping'] },
-  { id: 'hostel-a',  label: 'Hostel Block A',    pos: [4,  1.25, -1],  size: [2,   2.5, 2],   color: '#0f2012', emissive: '#16a34a', dept: ['Civil','Housekeeping'] },
-  { id: 'hostel-b',  label: 'Hostel Block B',    pos: [4,  1.1,  2.5], size: [2,   2.2, 2],   color: '#0f2012', emissive: '#16a34a', dept: ['Civil','Housekeeping'] },
-  { id: 'grounds',   label: 'Grounds',           pos: [-5, 0.1,  3.5], size: [2,   0.2, 2.5], color: '#091a09', emissive: '#4ade80', dept: ['Grounds'] },
+  { id: 'academic-a', label: 'Academic Block A', pos: [-4, 0.75, -3], size: [3.5, 1.5, 2.5], color: '#0f2040', emissive: '#1e40af', dept: ['Electrical', 'Civil'] },
+  { id: 'academic-b', label: 'Academic Block B', pos: [1, 0.875, -3], size: [3, 1.75, 2.5], color: '#0f2040', emissive: '#1e40af', dept: ['Electrical', 'Civil'] },
+  { id: 'library', label: 'Library', pos: [-4, 0.6, 1], size: [2.5, 1.2, 2], color: '#1a0f40', emissive: '#7c3aed', dept: ['IT'] },
+  { id: 'lab-a', label: 'Computer Lab', pos: [1, 0.5, 1], size: [2, 1.0, 1.8], color: '#001f2b', emissive: '#0891b2', dept: ['IT'] },
+  { id: 'lab-b', label: 'Physics Lab', pos: [3.5, 0.45, 1], size: [1.8, 0.9, 1.8], color: '#001f2b', emissive: '#0891b2', dept: ['Electrical'] },
+  { id: 'cafeteria', label: 'Cafeteria', pos: [-1, 0.3, 3.5], size: [3.5, 0.6, 2], color: '#1a1000', emissive: '#d97706', dept: ['Housekeeping'] },
+  { id: 'hostel-a', label: 'Hostel Block A', pos: [4, 1.25, -1], size: [2, 2.5, 2], color: '#0f2012', emissive: '#16a34a', dept: ['Civil', 'Housekeeping'] },
+  { id: 'hostel-b', label: 'Hostel Block B', pos: [4, 1.1, 2.5], size: [2, 2.2, 2], color: '#0f2012', emissive: '#16a34a', dept: ['Civil', 'Housekeeping'] },
+  { id: 'grounds', label: 'Grounds', pos: [-5, 0.1, 3.5], size: [2, 0.2, 2.5], color: '#091a09', emissive: '#4ade80', dept: ['Grounds'] },
 ];
 
 const PRIORITY_COLORS: Record<string, { hex: string; glow: string }> = {
-  High:   { hex: '#f87171', glow: '#ef4444' },
+  High: { hex: '#f87171', glow: '#ef4444' },
   Medium: { hex: '#fbbf24', glow: '#f59e0b' },
-  Low:    { hex: '#60a5fa', glow: '#3b82f6' },
+  Low: { hex: '#60a5fa', glow: '#3b82f6' },
 };
 
 // ─── BOX EDGES HELPER ─────────────────────────────────
@@ -42,12 +43,12 @@ function BoxEdges({ size, color }: { size: [number, number, number]; color: stri
   const [w, h, d] = size;
   const hw = w / 2, hh = h / 2, hd = d / 2;
   const pts: [number, number, number][] = [
-    [-hw,-hh,-hd],[hw,-hh,-hd],[hw,hh,-hd],[-hw,hh,-hd],[-hw,-hh,-hd],
-    [-hw,-hh,hd],[hw,-hh,hd],[hw,hh,hd],[-hw,hh,hd],[-hw,-hh,hd],
+    [-hw, -hh, -hd], [hw, -hh, -hd], [hw, hh, -hd], [-hw, hh, -hd], [-hw, -hh, -hd],
+    [-hw, -hh, hd], [hw, -hh, hd], [hw, hh, hd], [-hw, hh, hd], [-hw, -hh, hd],
   ];
-  const cross: Array<[[number,number,number],[number,number,number]]> = [
-    [[ hw,-hh,-hd],[ hw,-hh,hd]],[[ hw,hh,-hd],[ hw,hh,hd]],
-    [[-hw,hh,-hd],[-hw,hh,hd]], [[-hw,-hh,-hd],[-hw,-hh,hd]],
+  const cross: Array<[[number, number, number], [number, number, number]]> = [
+    [[hw, -hh, -hd], [hw, -hh, hd]], [[hw, hh, -hd], [hw, hh, hd]],
+    [[-hw, hh, -hd], [-hw, hh, hd]], [[-hw, -hh, -hd], [-hw, -hh, hd]],
   ];
   return (
     <>
@@ -72,7 +73,16 @@ function BuildingMesh({ b }: { b: Building }) {
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}>
         <boxGeometry args={b.size} />
-        <meshStandardMaterial color={b.color} emissive={b.emissive} emissiveIntensity={0.22} roughness={0.6} metalness={0.3} />
+        <meshStandardMaterial
+          color={b.color}
+          emissive={b.emissive}
+          emissiveIntensity={0.22}
+          roughness={0.6}
+          metalness={0.3}
+          transparent={true}
+          opacity={0.4}
+          side={THREE.DoubleSide}
+        />
       </mesh>
       <BoxEdges size={b.size} color={hovered ? '#22d3ee' : b.emissive} />
       {/* Label */}
@@ -103,7 +113,8 @@ function IssueMarker({
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (markerRef.current) {
-      markerRef.current.position.y = pos[1] + 0.35 + Math.sin(t * 1.4 + pos[0]) * 0.12;
+      // Float around the center of the group (which is now the building center)
+      markerRef.current.position.y = Math.sin(t * 1.4 + pos[0]) * 0.12;
     }
     if (ringRef.current) {
       const s = 1 + Math.sin(t * 2 + pos[0]) * 0.18;
@@ -115,14 +126,14 @@ function IssueMarker({
 
   return (
     <group position={pos}>
-      {/* Pulsing ring */}
-      <mesh ref={ringRef} position={[0, 0.35, 0]}>
+      {/* Pulsing ring at center */}
+      <mesh ref={ringRef} position={[0, 0, 0]}>
         <torusGeometry args={[0.22, 0.035, 8, 24]} />
         <meshBasicMaterial color={hex} transparent opacity={0.3} />
       </mesh>
 
-      {/* Sphere marker */}
-      <mesh ref={markerRef} position={[0, 0.35, 0]}
+      {/* Sphere marker at center */}
+      <mesh ref={markerRef} position={[0, 0, 0]}
         onClick={(e) => { e.stopPropagation(); onClick(); }}
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true); onHover(ticket); document.body.style.cursor = 'pointer'; }}
         onPointerOut={() => { setHovered(false); onHover(null); document.body.style.cursor = 'default'; }}>
@@ -130,7 +141,7 @@ function IssueMarker({
         <meshStandardMaterial color={hex} emissive={glow} emissiveIntensity={hovered ? 2.5 : 1.4} roughness={0.2} metalness={0.1} />
       </mesh>
 
-      {/* Vertical stem */}
+      {/* Vertical stem removed or shortened as it's now inside */}
       <mesh position={[0, 0.1, 0]}>
         <cylinderGeometry args={[0.012, 0.012, 0.25, 6]} />
         <meshBasicMaterial color={hex} />
@@ -223,10 +234,10 @@ function buildHeatmapTexture(spots: HeatSpot[], time: number): THREE.CanvasTextu
 
     const grad = ctx.createRadialGradient(cx, cz, 0, cx, cz, radius);
     const col = heatColor(intensity);
-    grad.addColorStop(0,   col + (alpha * 0.9).toFixed(2) + ')');
+    grad.addColorStop(0, col + (alpha * 0.9).toFixed(2) + ')');
     grad.addColorStop(0.35, col + (alpha * 0.55).toFixed(2) + ')');
-    grad.addColorStop(0.7,  col + (alpha * 0.15).toFixed(2) + ')');
-    grad.addColorStop(1,   'rgba(0,0,0,0)');
+    grad.addColorStop(0.7, col + (alpha * 0.15).toFixed(2) + ')');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
 
     ctx.globalCompositeOperation = 'lighter';
     ctx.fillStyle = grad;
@@ -240,7 +251,7 @@ function buildHeatmapTexture(spots: HeatSpot[], time: number): THREE.CanvasTextu
 
 function HeatmapOverlay({ spots }: { spots: HeatSpot[] }) {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const matRef  = useRef<THREE.MeshBasicMaterial>(null!);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null!);
   const timeRef = useRef(0);
 
   useFrame(({ clock }) => {
@@ -319,7 +330,19 @@ function CameraDrift() {
 
 // ─── MARKER PLACEMENT: map ticket → building pos ─────
 function placeMarker(ticket: MapTicket, existing: Map<string, number>): [number, number, number] {
-  const b = BUILDINGS.find(bd => bd.dept.includes(ticket.department)) ?? BUILDINGS[0];
+  const loc = (ticket.location || '').toLowerCase();
+  const desc = (ticket.description || '').toLowerCase();
+
+  let b = BUILDINGS.find(bd => {
+    const label = bd.label.toLowerCase();
+    return loc.includes(label) || desc.includes(label);
+  });
+
+  // Fallback to department if no direct building name match
+  if (!b) {
+    b = BUILDINGS.find(bd => bd.dept.includes(ticket.department)) ?? BUILDINGS[0];
+  }
+
   const key = b.id;
   const count = existing.get(key) ?? 0;
   existing.set(key, count + 1);
@@ -327,7 +350,7 @@ function placeMarker(ticket: MapTicket, existing: Map<string, number>): [number,
   const angle = (count / 6) * Math.PI * 2;
   return [
     b.pos[0] + Math.cos(angle) * spread * Math.min(count, 1),
-    b.pos[1] + b.size[1] / 2 + 0.05,
+    b.pos[1], // Positioned at the horizontal center plane of the building
     b.pos[2] + Math.sin(angle) * spread * Math.min(count, 1),
   ];
 }
@@ -399,9 +422,9 @@ export default function CampusMap3D({ tickets }: { tickets: MapTicket[] }) {
   }, [activeTickets]);
 
   const counts = {
-    high:   activeTickets.filter(t => t.priority === 'High').length,
+    high: activeTickets.filter(t => t.priority === 'High').length,
     medium: activeTickets.filter(t => t.priority === 'Medium').length,
-    low:    activeTickets.filter(t => t.priority === 'Low').length,
+    low: activeTickets.filter(t => t.priority === 'Low').length,
   };
 
   return (

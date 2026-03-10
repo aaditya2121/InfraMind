@@ -278,22 +278,13 @@ function Overview({ tickets }: { tickets: TicketItem[] }) {
           </div>
         </div>
 
-        {/* Priority ring + activity */}
-        <div className="space-y-5">
-          <div className="rounded-2xl border p-6" style={{ background: 'rgba(4,10,22,0.85)', borderColor: 'rgba(255,255,255,0.06)' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Activity className="w-4 h-4 text-purple-400" />
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">Priority Split</h3>
-            </div>
-            <PriorityRing tickets={tickets} />
+        {/* Priority ring */}
+        <div className="rounded-2xl border p-6" style={{ background: 'rgba(4,10,22,0.85)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="w-4 h-4 text-purple-400" />
+            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">Priority Split</h3>
           </div>
-          <div className="rounded-2xl border p-5" style={{ background: 'rgba(4,10,22,0.85)', borderColor: 'rgba(255,255,255,0.06)' }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-4 h-4 text-cyan-400" />
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest">Live Activity</h3>
-            </div>
-            <ActivityFeed tickets={tickets} />
-          </div>
+          <PriorityRing tickets={tickets} />
         </div>
       </div>
     </div>
