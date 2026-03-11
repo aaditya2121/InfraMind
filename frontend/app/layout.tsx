@@ -19,8 +19,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "InfraMind | Campus, Hostel & PG Management Elevated",
   description: "Seamlessly report and track property infrastructure issues with AI-powered categorization.",
-  icons: { icon: "/logo.png", apple: "/logo.png", shortcut: "/logo.png" },
-  manifest: "/manifest.json",
+  icons: { icon: "/icon-192x192.png", apple: "/icon-192x192.png", shortcut: "/icon-192x192.png" },
+  manifest: "/manifest.json?v=3",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
